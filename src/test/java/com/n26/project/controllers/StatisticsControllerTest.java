@@ -8,12 +8,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
-
-import static org.mockito.ArgumentMatchers.isNotNull;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.mockito.Mockito.when;
@@ -21,28 +21,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 @RunWith(SpringRunner.class)
 @WebMvcTest(StatisticsController.class)
 public class StatisticsControllerTest {
 
     @Autowired
-
     private MockMvc mvc;
 
     @MockBean
     private ComplexService complexService;
 
-
     @Test
     public void shouldReturnSampleStatistics() throws Exception {
-        Statistic statistic = new Statistic(223, BigDecimal.valueOf(50.32), 40, 10);
+        Statistic statistic = new Statistic();
+        statistic.setAmount(10D);
 
-        when(complexService.getStatistics()).thenReturn(statistic);
+        doReturn(statistic).when(complexService).getStatistics();
 
-        mvc.perform(get("/api/statistics").accept("application/json"))
-                .andExpect(content().contentTypeCompatibleWith("application/json"));
-
+        mvc.perform(
+                get("/api/statistics").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("sum", is(10.0)));
     }
-
 }

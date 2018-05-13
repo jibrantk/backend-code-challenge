@@ -1,40 +1,36 @@
 package com.n26.project.domains;
 
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
-import java.math.BigDecimal;
 import java.util.Objects;
 
-import static com.n26.project.exceptions.TimestampException.byCondition;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.MINUTES;
 
 public class Transaction {
 
-    private BigDecimal amount;
-    private long timestamp;
+    private Double amount;
+    private Long timestamp;
 
     public Transaction(){}
 
-    public Transaction(BigDecimal amount, long timestamp) {
+    public Transaction(Double amount, Long timestamp) {
         this.amount = amount;
         this.timestamp = timestamp;
     }
 
-    public BigDecimal getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(BigDecimal amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
-    public long getTimestamp() {
+    public Long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(long timestamp) {
-        byCondition(timestamp);
+    public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -49,7 +45,11 @@ public class Transaction {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(amount, timestamp);
     }
+
+    public Long toMin() {
+        return MINUTES.convert(timestamp, MILLISECONDS);
+    }
+
 }

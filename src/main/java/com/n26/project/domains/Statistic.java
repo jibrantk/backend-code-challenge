@@ -7,70 +7,59 @@ public class Statistic {
 
     private long count;
 
-    private BigDecimal sum;
+    private double sum;
 
     private double max;
 
     private double min;
 
+    private double avg;
 
-    public Statistic(long count, BigDecimal sum, double max, double min) {
-        this.count = count;
-        this.sum = (sum);
-        this.max = max;
-        this.min = min;
+    public void setAmount(Double amount) {
+        count++;
+        sum = sum + amount;
+        min = Math.min(min == 0.0 ? amount:min,amount);
+        max = Math.max(max,amount);
+        avg = Math.ceil(sum / count);
+    }
+
+    public double getAvg() {
+        return avg;
+    }
+
+    public void setAvg(double avg) {
+        this.avg = avg;
     }
 
     public long getCount() {
         return count;
     }
 
-    public BigDecimal getSum() {
+    public void setCount(long count) {
+        this.count = count;
+    }
+
+    public double getSum() {
         return sum;
+    }
+
+    public void setSum(Double sum) {
+        this.sum = sum;
     }
 
     public double getMax() {
         return max;
     }
 
+    public void setMax(double max) {
+        this.max = max;
+    }
+
     public double getMin() {
         return min;
     }
-    public static final Statistic INIT = new Statistic(1, BigDecimal.ZERO, Double.NaN, Double.NaN);
 
-    public BigDecimal getAvg() {
-        return count > 0 ? sum.divide(new BigDecimal(count)) : BigDecimal.ZERO;
-    }
-
-    public Statistic assign(BigDecimal amount) {
-        return this.equals(INIT) ?
-                new Statistic(1, amount, amount.doubleValue(), amount.doubleValue()) :
-                new Statistic(++count, sum.add(amount), Math.max(max, amount.doubleValue()), Math.min(min, amount.doubleValue()));
-    }
-
-    public Statistic merge(Statistic that) {
-        if (this.equals(INIT)) {
-            return that;
-        }
-        if (that.equals(INIT)) {
-            return this;
-        }
-        return new Statistic(this.count + that.count, this.sum.add(that.sum), Math.max(this.max, that.max), Math.min(this.min, that.min));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Statistic statistic = (Statistic) o;
-        return count == statistic.count &&
-                statistic.sum.compareTo(sum) == 0 &&
-                Double.compare(statistic.max, max) == 0 &&
-                Double.compare(statistic.min, min) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(count, sum, max, min);
+    public void setMin(double min) {
+        this.min = min;
     }
 }
